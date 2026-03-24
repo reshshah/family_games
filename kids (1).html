@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kids Night at The Rao's Residence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fffbf0;
+    --surface: #ffffff;
+    --surface2: #fff3e0;
+    --surface3: #ffe0b2;
+    --border: rgba(255,140,0,0.2);
+    --accent: #ff6f00;
+    --accent2: #e91e8c;
+    --accent3: #00bcd4;
+    --accent4: #8bc34a;
+    --accent5: #9c27b0;
+    --text: #1a1a2e;
+    --muted: #888;
+    --muted2: #555;
+    --display: 'Fredoka One', cursive;
+    --sans: 'Nunito', sans-serif;
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Confetti dots bg */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 10% 20%, rgba(255,111,0,0.08) 0%, transparent 40%),
+      radial-gradient(circle at 90% 15%, rgba(233,30,140,0.07) 0%, transparent 40%),
+      radial-gradient(circle at 50% 90%, rgba(0,188,212,0.07) 0%, transparent 40%),
+      radial-gradient(circle at 80% 60%, rgba(139,195,74,0.06) 0%, transparent 35%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 4rem;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    padding: 1.5rem 0 1.25rem;
+    animation: bounceIn 0.7s cubic-bezier(.36,.07,.19,.97) both;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--accent2);
+    border: 2px solid rgba(233,30,140,0.25);
+    padding: 5px 16px;
+    border-radius: 20px;
+    margin-bottom: 0.75rem;
+    background: rgba(233,30,140,0.06);
+    text-transform: uppercase;
+  }
+
+  .header h1 {
+    font-family: var(--display);
+    font-size: clamp(2rem, 8vw, 3.8rem);
+    line-height: 1.1;
+    margin-bottom: 0.4rem;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 50%, var(--accent5) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .header .subtitle {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--muted2);
+  }
+
+  .emoji-row {
+    font-size: 24px;
+    margin: 0.5rem 0;
+    letter-spacing: 4px;
+  }
+
+  /* HUD */
+  .hud-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 1.25rem;
+    animation: fadeUp 0.5s 0.15s ease both;
+  }
+
+  .hud-cell {
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 8px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(255,111,0,0.08);
+  }
+
+  .hud-cell:nth-child(1) { border-color: rgba(255,111,0,0.3); }
+  .hud-cell:nth-child(2) { border-color: rgba(0,188,212,0.3); }
+  .hud-cell:nth-child(3) { border-color: rgba(233,30,140,0.3); }
+
+  .hud-label {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .hud-val {
+    font-family: var(--display);
+    font-size: clamp(20px, 5vw, 28px);
+    color: var(--accent);
+  }
+
+  .hud-cell:nth-child(2) .hud-val { color: var(--accent3); }
+  .hud-cell:nth-child(3) .hud-val { color: var(--accent2); }
+
+  /* Progress */
+  .progress-wrap {
+    margin-bottom: 1.25rem;
+  }
+
+  .progress-label {
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    text-align: center;
+  }
+
+  .progress-bar {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .pdot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #e0e0e0;
+    border: 2px solid #ccc;
+    transition: all 0.3s ease;
+    cursor: default;
+  }
+  .pdot.done { background: var(--accent4); border-color: var(--accent4); }
+  .pdot.current { background: var(--accent); border-color: var(--accent); transform: scale(1.2); }
+  .pdot.clickable { cursor: pointer; }
+  .pdot.clickable:hover { transform: scale(1.15); }
+
+  /* Question card */
+  .q-card {
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.75rem 1.5rem;
+    margin-bottom: 1rem;
+    animation: fadeUp 0.5s ease both;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(255,111,0,0.08);
+  }
+
+  .q-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3), var(--accent4));
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+
+  .q-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .q-num {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .q-cat {
+    font-size: 11px;
+    font-weight: 800;
+    padding: 4px 14px;
+    border-radius: 20px;
+    background: rgba(255,111,0,0.1);
+    color: var(--accent);
+    border: 2px solid rgba(255,111,0,0.2);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .q-text {
+    font-family: var(--display);
+    font-size: clamp(18px, 4.5vw, 24px);
+    line-height: 1.35;
+    color: var(--text);
+    margin-bottom: 1.5rem;
+  }
+
+  /* Answers */
+  .answers {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 1.25rem;
+  }
+
+  @media (max-width: 480px) {
+    .answers { grid-template-columns: 1fr; }
+    .wrap { padding: 1rem 0.75rem 3rem; }
+    .q-card { padding: 1.25rem 1rem; }
+  }
+
+  .ans-btn {
+    background: var(--surface2);
+    border: 2px solid rgba(255,140,0,0.15);
+    border-radius: var(--radius-sm);
+    padding: 13px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--muted2);
+    text-align: left;
+    width: 100%;
+  }
+
+  .ans-btn:not(.revealed):not(.hidden-slot):hover {
+    border-color: var(--accent);
+    color: var(--text);
+    background: var(--surface3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(255,111,0,0.15);
+  }
+
+  .ans-btn .rank {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--muted);
+    min-width: 22px;
+    flex-shrink: 0;
+  }
+
+  .ans-btn .ans-label { flex: 1; line-height: 1.35; }
+
+  .ans-btn .pct {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .ans-btn.revealed {
+    background: linear-gradient(135deg, rgba(255,111,0,0.08), rgba(233,30,140,0.06));
+    border-color: rgba(255,111,0,0.4);
+    color: var(--text);
+    cursor: default;
+  }
+
+  .ans-btn.revealed .rank { color: var(--accent); }
+  .ans-btn.revealed .pct { color: var(--accent2); }
+
+  .ans-btn.hidden-slot {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  /* Strikes */
+  .strikes-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+  }
+
+  .s-label {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-right: 4px;
+  }
+
+  .strike {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 2px solid #ddd;
+    background: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: transparent;
+    transition: all 0.3s ease;
+  }
+
+  .strike.active {
+    background: rgba(233,30,140,0.12);
+    border-color: var(--accent2);
+    color: var(--accent2);
+    animation: strikeIn 0.4s ease;
+  }
+
+  @keyframes strikeIn {
+    0% { transform: scale(1.5) rotate(-10deg); }
+    60% { transform: scale(0.9) rotate(5deg); }
+    100% { transform: scale(1) rotate(0); }
+  }
+
+  /* Buttons */
+  .btn-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 800;
+    padding: 11px 20px;
+    border-radius: var(--radius-sm);
+    border: 2px solid var(--border);
+    background: var(--surface);
+    color: var(--muted2);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn:hover {
+    background: var(--surface2);
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-1px);
+  }
+
+  .btn:active { transform: scale(0.96); }
+
+  .btn.primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 3px 12px rgba(255,111,0,0.3);
+  }
+  .btn.primary:hover {
+    opacity: 0.92;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 16px rgba(255,111,0,0.35);
+  }
+
+  .btn.strike-btn {
+    border-color: rgba(233,30,140,0.3);
+    color: var(--accent2);
+  }
+  .btn.strike-btn:hover {
+    background: rgba(233,30,140,0.08);
+    border-color: var(--accent2);
+    color: var(--accent2);
+  }
+
+  .btn.clear-strike-btn {
+    border-color: rgba(150,150,150,0.25);
+    color: var(--muted);
+  }
+  .btn.clear-strike-btn:hover {
+    background: rgba(150,150,150,0.08);
+    border-color: var(--muted);
+    color: var(--muted2);
+  }
+
+  .btn.hidden { display: none; }
+
+  /* Result message */
+  .result-msg {
+    font-size: 14px;
+    font-weight: 800;
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 1rem;
+    display: none;
+    line-height: 1.4;
+  }
+  .result-msg.show { display: block; }
+  .result-msg.win {
+    background: rgba(139,195,74,0.12);
+    border: 2px solid rgba(139,195,74,0.4);
+    color: #558b2f;
+  }
+  .result-msg.lose {
+    background: rgba(233,30,140,0.08);
+    border: 2px solid rgba(233,30,140,0.3);
+    color: var(--accent2);
+  }
+
+  .card-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.25rem 0;
+  }
+
+  /* Final screen */
+  .final {
+    display: none;
+    text-align: center;
+    padding: 3rem 1.5rem;
+    animation: bounceIn 0.6s ease both;
+  }
+  .final.show { display: block; }
+
+  .final-trophy { font-size: 72px; margin-bottom: 0.75rem; }
+  .final-score {
+    font-family: var(--display);
+    font-size: clamp(60px, 15vw, 88px);
+    color: var(--accent);
+    line-height: 1;
+  }
+  .final-label {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin: 0.5rem 0 1rem;
+  }
+  .final-msg {
+    font-family: var(--display);
+    font-size: 20px;
+    color: var(--text);
+    margin-bottom: 2rem;
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.5;
+  }
+
+  /* Animations */
+  @keyframes bounceIn {
+    0% { opacity: 0; transform: scale(0.85) translateY(-10px); }
+    60% { opacity: 1; transform: scale(1.03); }
+    100% { transform: scale(1) translateY(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulse-fun {
+    0% { box-shadow: 0 0 0 0 rgba(255,111,0,0.5); }
+    70% { box-shadow: 0 0 0 14px rgba(255,111,0,0); }
+    100% { box-shadow: 0 0 0 0 rgba(255,111,0,0); }
+  }
+
+  .ans-btn.pulse { animation: pulse-fun 0.5s ease; }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding-top: 3rem;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="header">
+    <div class="tag">Game Night at The Rao's Residence &mdash; Kids Edition &mdash; By Invite Only</div>
+    <div class="emoji-row">🎮 🌮 🏏 🎬 💻</div>
+    <h1>Desi Kid Feud</h1>
+    <p class="subtitle">100 desi kids born in the Bay Area can't be wrong!</p>
+  </div>
+
+  <div class="hud-bar" id="hud">
+    <div class="hud-cell">
+      <div class="hud-label">Score</div>
+      <div class="hud-val" id="score">0</div>
+    </div>
+    <div class="hud-cell">
+      <div class="hud-label">Round</div>
+      <div class="hud-val" id="qcount">1 / 50</div>
+    </div>
+    <div class="hud-cell">
+      <div class="hud-label">Strikes</div>
+      <div class="hud-val" id="strike-count">0 / 3</div>
+    </div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-label">Progress</div>
+    <div class="progress-bar" id="progress"></div>
+  </div>
+
+  <div id="game-area">
+    <div class="q-card" id="q-card">
+      <div class="q-meta">
+        <span class="q-num" id="q-num">Question 01</span>
+        <span class="q-cat" id="q-cat">Loading</span>
+      </div>
+      <div class="q-text" id="q-text">Loading...</div>
+
+      <div class="strikes-row">
+        <span class="s-label">Strikes</span>
+        <div class="strike" id="s1">✕</div>
+        <div class="strike" id="s2">✕</div>
+        <div class="strike" id="s3">✕</div>
+      </div>
+
+      <div class="answers" id="answers"></div>
+
+      <div class="result-msg" id="result-msg"></div>
+
+      <div class="card-divider"></div>
+
+      <div class="btn-row">
+        <button class="btn primary" id="reveal-btn" onclick="revealAll()">Reveal answers</button>
+        <button class="btn strike-btn" id="strike-btn" onclick="addStrike()">+ Strike</button>
+        <button class="btn clear-strike-btn" id="clear-strike-btn" onclick="clearStrike()">− Strike</button>
+        <button class="btn hidden" id="next-btn" onclick="nextQuestion()">Next round →</button>
+        <button class="btn hidden" id="back-btn" onclick="prevQuestion()">← Back</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="final" id="final">
+    <div class="final-trophy" id="trophy">🏆</div>
+    <div class="final-score" id="final-score">0</div>
+    <div class="final-label">points scored</div>
+    <div class="final-msg" id="final-msg"></div>
+    <div class="btn-row" style="justify-content:center; gap:12px;">
+      <button class="btn primary" onclick="restartGame()">Play again!</button>
+      <button class="btn" onclick="window.location.reload()">Reset</button>
+    </div>
+  </div>
+
+  <div class="footer">
+    &copy; game night hq &nbsp;|&nbsp; kids edition &nbsp;|&nbsp; reshshah.github.io/family_games
+  </div>
+
+</div>
+
+<script>
+const questions = [
+  {
+    cat: "School life",
+    text: "Name something your Indian parents ALWAYS say about school",
+    answers: [
+      { text: "\"Get straight A's\"", pts: 42 },
+      { text: "\"Doctor or engineer only\"", pts: 27 },
+      { text: "\"No video games until homework done\"", pts: 17 },
+      { text: "\"Your cousin got 100%\"", pts: 9 },
+      { text: "\"Extra credit is not optional\"", pts: 5 },
+    ]
+  },
+  {
+    cat: "Food",
+    text: "Name a food your desi parents pack in your school lunch that embarrasses you",
+    answers: [
+      { text: "Roti and sabzi", pts: 38 },
+      { text: "Leftover biryani", pts: 28 },
+      { text: "Aloo paratha", pts: 17 },
+      { text: "Idli / dosa", pts: 11 },
+      { text: "Tadka dal rice", pts: 6 },
+    ]
+  },
+  {
+    cat: "Two worlds",
+    text: "Name something you do differently at home vs at a friend's house",
+    answers: [
+      { text: "Take shoes off at the door", pts: 40 },
+      { text: "Eat with hands sometimes", pts: 25 },
+      { text: "No beef / vegetarian food", pts: 18 },
+      { text: "Speak a different language", pts: 11 },
+      { text: "Watch Bollywood not Netflix", pts: 6 },
+    ]
+  },
+  {
+    cat: "Tech kids",
+    text: "Name something every kid with a techie parent in the Bay Area has",
+    answers: [
+      { text: "An iPad before age 5", pts: 36 },
+      { text: "Screen time limits app", pts: 26 },
+      { text: "A coding class on weekends", pts: 20 },
+      { text: "Parent who works at Google/Apple/Meta", pts: 12 },
+      { text: "A robot toy or LEGO Mindstorms", pts: 6 },
+    ]
+  },
+  {
+    cat: "Bollywood",
+    text: "Name a Bollywood movie your parents have made you watch",
+    answers: [
+      { text: "DDLJ (Dilwale Dulhania Le Jayenge)", pts: 35 },
+      { text: "Kuch Kuch Hota Hai", pts: 27 },
+      { text: "3 Idiots", pts: 20 },
+      { text: "Sholay", pts: 11 },
+      { text: "Taare Zameen Par", pts: 7 },
+    ]
+  },
+  {
+    cat: "Desi household",
+    text: "Name something your parents do that your American friends think is weird",
+    answers: [
+      { text: "Remove shoes before entering", pts: 39 },
+      { text: "Pray every morning", pts: 26 },
+      { text: "Speak in another language on the phone", pts: 18 },
+      { text: "Have a separate 'guest' living room", pts: 11 },
+      { text: "Keep sweets in a steel dabba", pts: 6 },
+    ]
+  },
+  {
+    cat: "Bay Area life",
+    text: "Name something every Bay Area kid does on weekends",
+    answers: [
+      { text: "Go to a birthday party", pts: 34 },
+      { text: "Sports practice / coding class", pts: 28 },
+      { text: "Indian temple or cultural event", pts: 18 },
+      { text: "Hike or go to a park", pts: 13 },
+      { text: "Boba tea run", pts: 7 },
+    ]
+  },
+  {
+    cat: "School life",
+    text: "Name a subject your Indian parents care about the most",
+    answers: [
+      { text: "Math", pts: 48 },
+      { text: "Science", pts: 30 },
+      { text: "English / reading", pts: 12 },
+      { text: "Computer science", pts: 7 },
+      { text: "History", pts: 3 },
+    ]
+  },
+  {
+    cat: "Two worlds",
+    text: "Name something that's totally normal in India but confusing in the US",
+    answers: [
+      { text: "Eating rice with hands", pts: 37 },
+      { text: "Calling every adult uncle or auntie", pts: 28 },
+      { text: "Bargaining at stores", pts: 18 },
+      { text: "Loud family gatherings", pts: 11 },
+      { text: "No personal space questions (age, salary)", pts: 6 },
+    ]
+  },
+  {
+    cat: "Food",
+    text: "Name a snack your desi parents always have at home",
+    answers: [
+      { text: "Mixture / chivda", pts: 36 },
+      { text: "Biscuits (Parle-G)", pts: 27 },
+      { text: "Dry fruits and nuts", pts: 20 },
+      { text: "Chakli / murukku", pts: 11 },
+      { text: "Khakhra", pts: 6 },
+    ]
+  },
+  {
+    cat: "Holidays",
+    text: "Name a festival your family celebrates at home in the US",
+    answers: [
+      { text: "Diwali", pts: 46 },
+      { text: "Holi", pts: 29 },
+      { text: "Navratri / Garba", pts: 14 },
+      { text: "Eid", pts: 7 },
+      { text: "Onam / Pongal", pts: 4 },
+    ]
+  },
+  {
+    cat: "Tech kids",
+    text: "Name a game or app every Bay Area kid uses",
+    answers: [
+      { text: "Minecraft", pts: 38 },
+      { text: "Roblox", pts: 30 },
+      { text: "YouTube", pts: 17 },
+      { text: "Fortnite", pts: 10 },
+      { text: "Duolingo", pts: 5 },
+    ]
+  },
+  {
+    cat: "Desi household",
+    text: "Name something your grandparents (nana/nani/dada/dadi) always bring from India",
+    answers: [
+      { text: "Sweets and mithai", pts: 40 },
+      { text: "Indian clothes / kurta", pts: 27 },
+      { text: "Pickles and masalas", pts: 18 },
+      { text: "Ayurvedic medicines", pts: 10 },
+      { text: "Toys and gifts", pts: 5 },
+    ]
+  },
+  {
+    cat: "School life",
+    text: "Name something your teacher said that you had to explain to your desi parents",
+    answers: [
+      { text: "\"Take a mental health day\"", pts: 35 },
+      { text: "\"There are no wrong answers\"", pts: 28 },
+      { text: "\"Participate in class discussion\"", pts: 20 },
+      { text: "\"Dress down Friday\"", pts: 11 },
+      { text: "\"Field trip permission slip\"", pts: 6 },
+    ]
+  },
+  {
+    cat: "Bay Area life",
+    text: "Name something special about growing up in the Bay Area",
+    answers: [
+      { text: "Tech companies everywhere", pts: 36 },
+      { text: "So many different cultures and foods", pts: 28 },
+      { text: "Great weather (mostly!)", pts: 18 },
+      { text: "Lots of Indian families nearby", pts: 12 },
+      { text: "Golden Gate Bridge and cool nature", pts: 6 },
+    ]
+  },
+  {
+    cat: "Two worlds",
+    text: "Name something you're better at than your parents because you grew up here",
+    answers: [
+      { text: "Speaking English perfectly", pts: 42 },
+      { text: "Understanding American humor / slang", pts: 26 },
+      { text: "Knowing pop culture (music, movies)", pts: 17 },
+      { text: "Making American friends easily", pts: 10 },
+      { text: "Ordering food / tipping culture", pts: 5 },
+    ]
+  },
+  {
+    cat: "Bollywood",
+    text: "Name a Bollywood song you secretly know all the words to",
+    answers: [
+      { text: "Chaiyya Chaiyya", pts: 33 },
+      { text: "Jai Ho", pts: 27 },
+      { text: "Kuch Kuch Hota Hai title track", pts: 20 },
+      { text: "Balam Pichkari (Holi song)", pts: 13 },
+      { text: "Mere Naam Tu", pts: 7 },
+    ]
+  },
+  {
+    cat: "Desi household",
+    text: "Name something your parents say when you ask for a dog or pet",
+    answers: [
+      { text: "\"We are NOT getting a dog\"", pts: 44 },
+      { text: "\"Too much work and mess\"", pts: 28 },
+      { text: "\"Focus on studies first\"", pts: 15 },
+      { text: "\"Animals belong outside, not inside\"", pts: 9 },
+      { text: "\"We'll think about it\" (means no)", pts: 4 },
+    ]
+  },
+  {
+    cat: "Holidays",
+    text: "Name something your family does on Diwali in the US",
+    answers: [
+      { text: "Light diyas and decorate the house", pts: 38 },
+      { text: "Go to a community Diwali event", pts: 26 },
+      { text: "Video call family in India", pts: 19 },
+      { text: "Make or buy Indian sweets", pts: 12 },
+      { text: "Do puja together", pts: 5 },
+    ]
+  },
+  {
+    cat: "Tech kids",
+    text: "Name something your parents say about screen time",
+    answers: [
+      { text: "\"One hour max, then homework\"", pts: 40 },
+      { text: "\"No phone at dinner table\"", pts: 27 },
+      { text: "\"Go play outside instead\"", pts: 17 },
+      { text: "\"That game is rotting your brain\"", pts: 11 },
+      { text: "\"In our day we played outside\"", pts: 5 },
+    ]
+  },
+
+  // --- NEW 30 ---
+  {
+    cat: "School life",
+    text: "Name something your desi parents do at parent-teacher night that embarrasses you",
+    answers: [
+      { text: "Ask the teacher why you got a B not an A", pts: 40 },
+      { text: "Speak with a strong accent loudly", pts: 26 },
+      { text: "Bring homemade food for the teacher", pts: 17 },
+      { text: "Compare you to another student", pts: 11 },
+      { text: "Stay way too long asking questions", pts: 6 },
+    ]
+  },
+  {
+    cat: "Food",
+    text: "Name a food your parents make that you actually love secretly",
+    answers: [
+      { text: "Aloo paratha with butter", pts: 38 },
+      { text: "Khichdi", pts: 27 },
+      { text: "Maggi noodles", pts: 18 },
+      { text: "Rajma chawal", pts: 11 },
+      { text: "Ras malai / gulab jamun", pts: 6 },
+    ]
+  },
+  {
+    cat: "Bay Area life",
+    text: "Name something every kid at a Bay Area school has done",
+    answers: [
+      { text: "Science fair project", pts: 36 },
+      { text: "Coding or robotics club", pts: 27 },
+      { text: "Math olympiad / competition", pts: 18 },
+      { text: "Earthquake drill", pts: 13 },
+      { text: "Zoom class from home", pts: 6 },
+    ]
+  },
+  {
+    cat: "Two worlds",
+    text: "Name something you have to translate or explain when parents visit your school",
+    answers: [
+      { text: "\"Casual Friday\" dress code", pts: 35 },
+      { text: "Why kids call teachers by first name", pts: 27 },
+      { text: "What a field trip is", pts: 20 },
+      { text: "Why grades use letters not numbers", pts: 12 },
+      { text: "What a bake sale is", pts: 6 },
+    ]
+  },
+  {
+    cat: "Desi household",
+    text: "Name something your parents say when you leave the lights on",
+    answers: [
+      { text: "\"Do you think electricity is free?\"", pts: 44 },
+      { text: "\"I'm not paying for empty rooms\"", pts: 28 },
+      { text: "\"Turn it off when you leave\"", pts: 15 },
+      { text: "\"In India we never wasted like this\"", pts: 9 },
+      { text: "\"Go check the bill this month\"", pts: 4 },
+    ]
+  },
+  {
+    cat: "Tech kids",
+    text: "Name something a Bay Area kid brags about at school",
+    answers: [
+      { text: "\"My dad works at Google / Apple\"", pts: 42 },
+      { text: "\"I already know how to code\"", pts: 27 },
+      { text: "\"I have the new iPhone\"", pts: 17 },
+      { text: "\"I went to Hawaii / Japan last summer\"", pts: 9 },
+      { text: "\"My mom is a startup founder\"", pts: 5 },
+    ]
+  },
+  {
+    cat: "School life",
+    text: "Name something desi parents check every single day",
+    answers: [
+      { text: "Your homework", pts: 43 },
+      { text: "Your grades online", pts: 28 },
+      { text: "What you ate for lunch", pts: 14 },
+      { text: "Who you're hanging out with", pts: 10 },
+      { text: "Your screen time", pts: 5 },
+    ]
+  },
+  {
+    cat: "Bollywood",
+    text: "Name something funny that happens in every Bollywood movie",
+    answers: [
+      { text: "Hero overhears something and misunderstands", pts: 37 },
+      { text: "A disguise that fools everyone", pts: 26 },
+      { text: "A clumsy sidekick trips or falls", pts: 19 },
+      { text: "Twin / lookalike confusion", pts: 12 },
+      { text: "Someone faints dramatically", pts: 6 },
+    ]
+  },
+  {
+    cat: "Two worlds",
+    text: "Name something you wish your American friends understood about your culture",
+    answers: [
+      { text: "Taking off shoes at the door", pts: 38 },
+      { text: "Why we eat rice every day", pts: 26 },
+      { text: "Respecting elders is a big deal", pts: 18 },
+      { text: "Indian food is not all spicy", pts: 12 },
+      { text: "Festivals are as fun as Christmas", pts: 6 },
+    ]
+  },
+  {
+    cat: "Food",
+    text: "Name something your parents say when you ask for fast food",
+    answers: [
+      { text: "\"We have food at home\"", pts: 46 },
+      { text: "\"That's not healthy at all\"", pts: 27 },
+      { text: "\"So expensive for such bad food\"", pts: 15 },
+      { text: "\"Do you know what's in that?\"", pts: 8 },
+      { text: "\"Okay, but eat vegetables after\"", pts: 4 },
+    ]
+  },
+  {
+    cat: "Bay Area life",
+    text: "Name something every Bay Area kid does in summer",
+    answers: [
+      { text: "Summer camp (coding or sports)", pts: 36 },
+      { text: "Trip to India to visit grandparents", pts: 27 },
+      { text: "Road trip to national parks", pts: 18 },
+      { text: "Summer reading program at the library", pts: 12 },
+      { text: "Online enrichment classes", pts: 7 },
+    ]
+  },
+  {
+    cat: "Desi household",
+    text: "Name something your grandparents do when they visit from India",
+    answers: [
+      { text: "Wake up super early and do puja", pts: 38 },
+      { text: "Cook all day and feed everyone", pts: 28 },
+      { text: "Complain about the cold weather", pts: 17 },
+      { text: "Watch Indian TV serials all day", pts: 11 },
+      { text: "Give you money secretly", pts: 6 },
+    ]
+  },
+  {
+    cat: "Tech kids",
+    text: "Name a subject your parents wish was taught more in school",
+    answers: [
+      { text: "Coding / computer science", pts: 41 },
+      { text: "Math (harder than what's taught)", pts: 28 },
+      { text: "Finance and investing", pts: 16 },
+      { text: "Indian history and culture", pts: 10 },
+      { text: "Science (more advanced)", pts: 5 },
+    ]
+  },
+  {
+    cat: "School life",
+    text: "Name something that happens on the last day of school",
+    answers: [
+      { text: "Sign each other's yearbooks", pts: 39 },
+      { text: "Teacher shows a movie", pts: 27 },
+      { text: "Clean out your locker / desk", pts: 18 },
+      { text: "Everyone's excited and loud", pts: 11 },
+      { text: "Say goodbye to teachers", pts: 5 },
+    ]
+  },
+  {
+    cat: "Two worlds",
+    text: "Name a word or phrase you use at home that doesn't exist in English",
+    answers: [
+      { text: "Jugaad (creative fix)", pts: 36 },
+      { text: "Kal (yesterday AND tomorrow)", pts: 27 },
+      { text: "Arey / arre (expression of surprise)", pts: 19 },
+      { text: "Chalo (let's go)", pts: 12 },
+      { text: "Timepass (wasting time for fun)", pts: 6 },
+    ]
+  },
+  {
+    cat: "Holidays",
+    text: "Name something kids do on Holi",
+    answers: [
+      { text: "Throw colored powder at everyone", pts: 44 },
+      { text: "Get drenched with water guns", pts: 28 },
+      { text: "Eat gujiya and sweets", pts: 15 },
+      { text: "Ruin clothes (on purpose)", pts: 9 },
+      { text: "Chase friends and family", pts: 4 },
+    ]
+  },
+  {
+    cat: "Bay Area life",
+    text: "Name something unique about going to school in the Bay Area",
+    answers: [
+      { text: "Lots of kids from different countries", pts: 38 },
+      { text: "Everyone's parents work in tech", pts: 27 },
+      { text: "Lots of Indian and Asian kids", pts: 18 },
+      { text: "No snow days but lots of fog", pts: 11 },
+      { text: "Earthquake drills instead of tornado drills", pts: 6 },
+    ]
+  },
+  {
+    cat: "Bollywood",
+    text: "Name a Bollywood actor kids your age actually know",
+    answers: [
+      { text: "Shah Rukh Khan", pts: 40 },
+      { text: "Ranveer Singh", pts: 26 },
+      { text: "Alia Bhatt", pts: 18 },
+      { text: "Ranbir Kapoor", pts: 11 },
+      { text: "Tiger Shroff", pts: 5 },
+    ]
+  },
+  {
+    cat: "Desi household",
+    text: "Name something your parents do that saves money",
+    answers: [
+      { text: "Reuse plastic bags and containers", pts: 39 },
+      { text: "Buy in bulk at Costco", pts: 27 },
+      { text: "Fix things instead of replacing them", pts: 17 },
+      { text: "Cook at home, almost never eat out", pts: 11 },
+      { text: "Turn off AC and use a fan", pts: 6 },
+    ]
+  },
+  {
+    cat: "Tech kids",
+    text: "Name something every kid wants for their birthday",
+    answers: [
+      { text: "New gaming console", pts: 40 },
+      { text: "iPhone / new phone", pts: 28 },
+      { text: "Robux or V-Bucks gift card", pts: 17 },
+      { text: "New laptop", pts: 10 },
+      { text: "AirPods", pts: 5 },
+    ]
+  },
+  {
+    cat: "School life",
+    text: "Name something that makes every kid nervous at school",
+    answers: [
+      { text: "A surprise quiz or test", pts: 42 },
+      { text: "Presenting in front of the class", pts: 28 },
+      { text: "Getting called on when you don't know", pts: 16 },
+      { text: "Report card day", pts: 9 },
+      { text: "Trying out for a team or play", pts: 5 },
+    ]
+  },
+  {
+    cat: "Food",
+    text: "Name something desi kids eat that American kids find strange",
+    answers: [
+      { text: "Mango pickle / achar on rice", pts: 37 },
+      { text: "Curd / yogurt rice", pts: 26 },
+      { text: "Bitter gourd / karela", pts: 18 },
+      { text: "Khichdi (looks like mush)", pts: 13 },
+      { text: "Drinking warm turmeric milk (haldi doodh)", pts: 6 },
+    ]
+  },
+  {
+    cat: "Two worlds",
+    text: "Name something Indian that's actually cool once your friends try it",
+    answers: [
+      { text: "Holi / color festival", pts: 41 },
+      { text: "Indian food (butter chicken etc.)", pts: 29 },
+      { text: "Diwali fireworks and lights", pts: 16 },
+      { text: "Bollywood dance moves", pts: 9 },
+      { text: "Mehndi / henna on hands", pts: 5 },
+    ]
+  },
+  {
+    cat: "Holidays",
+    text: "Name something kids do on Diwali night",
+    answers: [
+      { text: "Light sparklers / phuljhadi", pts: 40 },
+      { text: "Eat tons of sweets", pts: 27 },
+      { text: "Decorate the house with diyas", pts: 17 },
+      { text: "Wear new Indian clothes", pts: 11 },
+      { text: "Do rangoli with family", pts: 5 },
+    ]
+  },
+  {
+    cat: "Bay Area life",
+    text: "Name something every kid complains about in the Bay Area",
+    answers: [
+      { text: "Too much homework and pressure", pts: 38 },
+      { text: "Traffic is always terrible", pts: 26 },
+      { text: "Everything is so expensive", pts: 19 },
+      { text: "Summers are too cold and foggy", pts: 12 },
+      { text: "No good sledding or snow", pts: 5 },
+    ]
+  },
+  {
+    cat: "Desi household",
+    text: "Name a chore your parents make you do on weekends",
+    answers: [
+      { text: "Clean your room", pts: 43 },
+      { text: "Help cook or prep food", pts: 27 },
+      { text: "Do the dishes", pts: 16 },
+      { text: "Vacuum or sweep the floor", pts: 9 },
+      { text: "Fold and put away laundry", pts: 5 },
+    ]
+  },
+  {
+    cat: "Tech kids",
+    text: "Name something every kid wants to be when they grow up",
+    answers: [
+      { text: "YouTuber / content creator", pts: 36 },
+      { text: "Video game designer", pts: 26 },
+      { text: "Doctor (thanks mom and dad)", pts: 20 },
+      { text: "Engineer / coder", pts: 12 },
+      { text: "Pro athlete", pts: 6 },
+    ]
+  },
+  {
+    cat: "Bollywood",
+    text: "Name something Bollywood heroes do that would never work in real life",
+    answers: [
+      { text: "Chase a train and jump on it", pts: 38 },
+      { text: "Fight 20 guys at once and win", pts: 27 },
+      { text: "Show up with a full dance crew randomly", pts: 18 },
+      { text: "Make it rain and do a dance number", pts: 11 },
+      { text: "Survive any explosion", pts: 6 },
+    ]
+  },
+  {
+    cat: "School life",
+    text: "Name something every kid does when a substitute teacher arrives",
+    answers: [
+      { text: "Give a fake name", pts: 38 },
+      { text: "Talk loudly and ignore rules", pts: 28 },
+      { text: "Ask to watch a movie", pts: 18 },
+      { text: "Do no work at all", pts: 11 },
+      { text: "Try to leave class early", pts: 5 },
+    ]
+  },
+  {
+    cat: "Two worlds",
+    text: "Name a rule at home that your American friends' parents would never have",
+    answers: [
+      { text: "No shoes inside ever", pts: 40 },
+      { text: "Finish every grain of rice on your plate", pts: 27 },
+      { text: "No sleepovers at friends' houses", pts: 18 },
+      { text: "Touch elders' feet to say hello", pts: 10 },
+      { text: "No meat on certain days", pts: 5 },
+    ]
+  },
+  {
+    cat: "Holidays",
+    text: "Name something kids argue about at a family party",
+    answers: [
+      { text: "Who gets the TV remote", pts: 38 },
+      { text: "Which game to play", pts: 27 },
+      { text: "Who gets the last gulab jamun", pts: 18 },
+      { text: "Whether to go outside or stay in", pts: 12 },
+      { text: "Whose parents are more strict", pts: 5 },
+    ]
+  },
+];
+
+let currentQ = 0, score = 0;
+
+const state = questions.map(q => ({
+  revealed: new Array(q.answers.length).fill(false),
+  strikes: 0,
+  done: false,
+  won: null,
+  scoreEarned: 0
+}));
+
+function initQuestion() {
+  const q = questions[currentQ];
+  const s = state[currentQ];
+
+  document.getElementById('q-num').textContent = `Question ${String(currentQ + 1).padStart(2,'0')}`;
+  document.getElementById('q-cat').textContent = q.cat;
+  document.getElementById('q-text').textContent = q.text;
+  document.getElementById('qcount').textContent = `${currentQ + 1} / ${questions.length}`;
+  document.getElementById('strike-count').textContent = `${s.strikes} / 3`;
+
+  ['s1','s2','s3'].forEach((id, i) => {
+    document.getElementById(id).classList.toggle('active', i < s.strikes);
+  });
+
+  const rm = document.getElementById('result-msg');
+  if (s.done && s.won === true) {
+    rm.className = 'result-msg win show';
+    rm.textContent = 'Board cleared! Amazing round!';
+  } else if (s.done && s.won === false) {
+    rm.className = 'result-msg lose show';
+    rm.textContent = 'Three strikes! The board wins this round.';
+  } else if (s.done && s.won === null) {
+    rm.className = 'result-msg win show';
+    rm.textContent = 'All answers revealed! Check your scores.';
+  } else {
+    rm.className = 'result-msg';
+    rm.textContent = '';
+  }
+
+  const revealBtn = document.getElementById('reveal-btn');
+  const strikeBtn = document.getElementById('strike-btn');
+  const clearBtn  = document.getElementById('clear-strike-btn');
+  const nextBtn   = document.getElementById('next-btn');
+  const backBtn   = document.getElementById('back-btn');
+
+  if (s.done) {
+    // After 3 strikes keep reveal visible; otherwise hide it
+    if (s.won === false) {
+      revealBtn.classList.remove('hidden');
+    } else {
+      revealBtn.classList.add('hidden');
+    }
+    strikeBtn.classList.add('hidden');
+    clearBtn.classList.add('hidden');
+    nextBtn.classList.remove('hidden');
+  } else {
+    revealBtn.classList.remove('hidden');
+    strikeBtn.classList.remove('hidden');
+    clearBtn.classList.remove('hidden');
+    nextBtn.classList.add('hidden');
+  }
+
+  backBtn.classList.toggle('hidden', currentQ === 0);
+
+  renderAnswers();
+  updateProgress();
+}
+
+function renderAnswers() {
+  const q = questions[currentQ];
+  const s = state[currentQ];
+  const container = document.getElementById('answers');
+  container.innerHTML = '';
+  q.answers.forEach((a, i) => {
+    const btn = document.createElement('button');
+    if (s.revealed[i]) {
+      btn.className = 'ans-btn revealed';
+      btn.innerHTML = `<span class="rank">#${i+1}</span><span class="ans-label">${a.text}</span><span class="pct">${a.pts}%</span>`;
+    } else {
+      btn.className = 'ans-btn hidden-slot';
+      btn.innerHTML = `<span class="rank">#${i+1}</span><span class="ans-label" style="color:#f5c990;font-family:monospace;font-size:12px;letter-spacing:0.08em">▓▓▓▓▓▓▓▓▓▓</span>`;
+      if (!s.done) {
+        btn.classList.remove('hidden-slot');
+        btn.onclick = () => handleGuess(i);
+      }
+    }
+    container.appendChild(btn);
+  });
+}
+
+function handleGuess(index) {
+  const s = state[currentQ];
+  if (s.done || s.revealed[index]) return;
+  const q = questions[currentQ];
+
+  s.revealed[index] = true;
+  s.scoreEarned += q.answers[index].pts;
+  score += q.answers[index].pts;
+  document.getElementById('score').textContent = score;
+
+  renderAnswers();
+  const btns = document.getElementById('answers').children;
+  btns[index].classList.add('pulse');
+
+  if (s.revealed.every(r => r)) endQuestion(true);
+}
+
+function addStrike() {
+  const s = state[currentQ];
+  if (s.done) return;
+  s.strikes++;
+  document.getElementById('strike-count').textContent = `${s.strikes} / 3`;
+  if (s.strikes >= 1) document.getElementById('s1').classList.add('active');
+  if (s.strikes >= 2) document.getElementById('s2').classList.add('active');
+  if (s.strikes >= 3) {
+    document.getElementById('s3').classList.add('active');
+    endQuestion(false);
+  }
+}
+
+function clearStrike() {
+  const s = state[currentQ];
+  if (s.done || s.strikes === 0) return;
+  s.strikes--;
+  document.getElementById('strike-count').textContent = `${s.strikes} / 3`;
+  if (s.strikes < 3) document.getElementById('s3').classList.remove('active');
+  if (s.strikes < 2) document.getElementById('s2').classList.remove('active');
+  if (s.strikes < 1) document.getElementById('s1').classList.remove('active');
+}
+
+function revealAll() {
+  const s = state[currentQ];
+  const q = questions[currentQ];
+  q.answers.forEach((a, i) => { s.revealed[i] = true; });
+  s.done = true;
+  s.won = s.won === false ? false : null; // preserve loss state if already 3 strikes
+  renderAnswers();
+  document.getElementById('reveal-btn').classList.add('hidden');
+  document.getElementById('strike-btn').classList.add('hidden');
+  document.getElementById('clear-strike-btn').classList.add('hidden');
+  document.getElementById('next-btn').classList.remove('hidden');
+
+  const rm = document.getElementById('result-msg');
+  rm.className = 'result-msg win show';
+  rm.textContent = 'All answers revealed! Check your scores.';
+}
+
+function endQuestion(won) {
+  const s = state[currentQ];
+  s.done = true;
+  s.won = won;
+  document.getElementById('strike-btn').classList.add('hidden');
+  document.getElementById('clear-strike-btn').classList.add('hidden');
+  document.getElementById('next-btn').classList.remove('hidden');
+  const rm = document.getElementById('result-msg');
+  if (won) {
+    document.getElementById('reveal-btn').classList.add('hidden');
+    rm.className = 'result-msg win show';
+    rm.textContent = 'Board cleared! Amazing round!';
+  } else {
+    document.getElementById('reveal-btn').classList.remove('hidden');
+    rm.className = 'result-msg lose show';
+    rm.textContent = 'Three strikes! The board wins this round.';
+  }
+}
+
+function animateCard(direction, cb) {
+  const card = document.getElementById('q-card');
+  card.style.transition = 'opacity 0.1s ease, transform 0.1s ease';
+  card.style.opacity = '0';
+  card.style.transform = direction === 'forward' ? 'translateY(10px)' : 'translateY(-10px)';
+  setTimeout(() => {
+    card.style.transition = 'none';
+    card.style.opacity = '';
+    card.style.transform = '';
+    cb();
+    card.style.animation = 'fadeUp 0.35s ease both';
+  }, 110);
+}
+
+function nextQuestion() {
+  currentQ++;
+  if (currentQ >= questions.length) {
+    showFinal();
+  } else {
+    animateCard('forward', initQuestion);
+  }
+}
+
+function prevQuestion() {
+  if (currentQ === 0) return;
+  currentQ--;
+  animateCard('back', initQuestion);
+}
+
+function updateProgress() {
+  const container = document.getElementById('progress');
+  container.innerHTML = '';
+  questions.forEach((_, i) => {
+    const d = document.createElement('div');
+    const isVisited = state[i].done || i <= currentQ;
+    d.className = 'pdot' + (i < currentQ ? ' done' : i === currentQ ? ' current' : '');
+    if (isVisited && i !== currentQ) {
+      d.classList.add('clickable');
+      d.title = `Round ${i+1}`;
+      d.onclick = () => jumpTo(i);
+    }
+    container.appendChild(d);
+  });
+}
+
+function jumpTo(index) {
+  if (index === currentQ) return;
+  const dir = index > currentQ ? 'forward' : 'back';
+  currentQ = index;
+  animateCard(dir, initQuestion);
+}
+
+function showFinal() {
+  document.getElementById('game-area').style.display = 'none';
+  document.getElementById('progress').style.display = 'none';
+  const fs = document.getElementById('final');
+  fs.classList.add('show');
+  document.getElementById('final-score').textContent = score;
+
+  const maxPossible = questions.reduce((sum, q) => sum + q.answers.reduce((s, a) => s + a.pts, 0), 0);
+  const pct = Math.round((score / maxPossible) * 100);
+
+  let msg, trophy;
+  if (pct >= 70)      { msg = "You're a desi legend! 🌟 Your parents would be SO proud!"; trophy = "🏆"; }
+  else if (pct >= 50) { msg = "Amazing job! The aunties are genuinely impressed! 🎉"; trophy = "🥈"; }
+  else if (pct >= 30) { msg = "Good effort! More chai and biryani needed for round two! 🍛"; trophy = "🥉"; }
+  else                { msg = "Arre yaar! Need more practice — and more paratha! 😄"; trophy = "🫓"; }
+
+  document.getElementById('final-msg').textContent = msg;
+  document.getElementById('trophy').textContent = trophy;
+}
+
+function restartGame() {
+  currentQ = 0; score = 0;
+  questions.forEach((q, i) => {
+    state[i].revealed = new Array(q.answers.length).fill(false);
+    state[i].strikes = 0;
+    state[i].done = false;
+    state[i].won = null;
+    state[i].scoreEarned = 0;
+  });
+  document.getElementById('score').textContent = '0';
+  document.getElementById('final').classList.remove('show');
+  document.getElementById('game-area').style.display = '';
+  document.getElementById('progress').style.display = '';
+  initQuestion();
+}
+
+initQuestion();
+</script>
+</body>
+</html>
