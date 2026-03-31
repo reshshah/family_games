@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game Night — Built by the Zing Thing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fdf6e8;
+    --surface: #ffffff;
+    --accent: #d97706;
+    --accent2: #e91e8c;
+    --accent3: #1565c0;
+    --accent4: #8bc34a;
+    --accent5: #7c3aed;
+    --text: #1a1206;
+    --muted: #9a7a4a;
+    --display: 'Fredoka One', cursive;
+    --sans: 'Nunito', sans-serif;
+    --radius: 20px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 10% 15%, rgba(217,119,6,0.08) 0%, transparent 45%),
+      radial-gradient(circle at 90% 20%, rgba(233,30,140,0.07) 0%, transparent 40%),
+      radial-gradient(circle at 50% 95%, rgba(0,188,212,0.07) 0%, transparent 40%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Header */
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    border: 2px solid rgba(233,30,140,0.2);
+    background: rgba(233,30,140,0.06);
+    padding: 5px 16px;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+    animation: fadeDown 0.6s ease both;
+  }
+
+  .emoji-row {
+    font-size: 28px;
+    letter-spacing: 6px;
+    margin-bottom: 0.75rem;
+    animation: fadeDown 0.6s 0.05s ease both;
+  }
+
+  h1 {
+    font-family: var(--display);
+    font-size: clamp(2.2rem, 8vw, 3.8rem);
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 60%, var(--accent3) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: fadeDown 0.6s 0.1s ease both;
+  }
+
+  .subtitle {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-bottom: 2.5rem;
+    animation: fadeDown 0.6s 0.15s ease both;
+  }
+
+  /* Game cards */
+  .cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 2rem;
+  }
+
+  @media (max-width: 640px) {
+    .cards { grid-template-columns: 1fr; }
+  }
+  @media (min-width: 641px) and (max-width: 820px) {
+    .cards { grid-template-columns: 1fr 1fr; }
+  }
+
+  .game-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 2rem 1.5rem;
+    text-decoration: none;
+    color: var(--text);
+    border: 2px solid transparent;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+    transition: all 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .game-card:nth-child(2) { animation-delay: 0.1s; }
+  .game-card:nth-child(3) { animation-delay: 0.2s; }
+
+  .game-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+  }
+
+  .game-card.adults::before {
+    background: linear-gradient(90deg, var(--accent), #ff9a5c);
+  }
+
+  .game-card.kids::before {
+    background: linear-gradient(90deg, #1976d2, #42a5f5, #81d4fa);
+  }
+
+  .game-card.words::before {
+    background: linear-gradient(90deg, #7c3aed, #a78bfa, #63b3ed);
+  }
+
+  .game-card.kids:hover { border-color: rgba(25,118,210,0.3); }
+  .game-card.words:hover { border-color: rgba(124,58,237,0.3); }
+
+  .game-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+  }
+
+  .game-card.adults:hover { border-color: rgba(217,119,6,0.3); }
+
+  .card-emoji {
+    font-size: 52px;
+    margin-bottom: 1rem;
+    line-height: 1;
+  }
+
+  .card-badge {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 3px 12px;
+    border-radius: 20px;
+    margin-bottom: 0.75rem;
+  }
+
+  .adults .card-badge {
+    background: rgba(217,119,6,0.1);
+    color: var(--accent);
+    border: 1.5px solid rgba(217,119,6,0.25);
+  }
+
+  .kids .card-badge {
+    background: rgba(25,118,210,0.1);
+    color: #1565c0;
+    border: 1.5px solid rgba(25,118,210,0.25);
+  }
+
+  .words .card-badge {
+    background: rgba(124,58,237,0.1);
+    color: #7c3aed;
+    border: 1.5px solid rgba(124,58,237,0.25);
+  }
+
+  .card-title {
+    font-family: var(--display);
+    font-size: clamp(1.3rem, 4vw, 1.7rem);
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+  }
+
+  .adults .card-title { color: var(--accent); }
+  .kids .card-title { color: #1565c0; }
+  .words .card-title { color: #7c3aed; }
+
+  .card-desc {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+    line-height: 1.5;
+    margin-bottom: 1.25rem;
+  }
+
+  .card-meta {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 1.25rem;
+  }
+
+  .card-btn {
+    display: inline-block;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 800;
+    padding: 10px 24px;
+    border-radius: 10px;
+    color: #fff;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+  }
+
+  .adults .card-btn {
+    background: linear-gradient(135deg, var(--accent), #ff9a5c);
+    box-shadow: 0 3px 12px rgba(217,119,6,0.3);
+  }
+
+  .kids .card-btn {
+    background: linear-gradient(135deg, #1976d2, #42a5f5);
+    box-shadow: 0 3px 12px rgba(25,118,210,0.3);
+  }
+
+  .words .card-btn {
+    background: linear-gradient(135deg, #7c3aed, #a78bfa);
+    box-shadow: 0 3px 12px rgba(124,58,237,0.3);
+  }
+
+  .game-card:hover .card-btn {
+    transform: scale(1.04);
+  }
+
+  /* Footer */
+  .footer {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="tag">Game Night &mdash; By Invite Only</div>
+  <h1>Pick Your Game</h1>
+  <p class="subtitle">Built by the Zing Thing</p>
+
+  <div class="cards">
+    <a href="adults.html" class="game-card adults">
+      <div class="card-badge">Adults</div>
+      <div class="card-title">Desi Family Feud</div>
+      <div class="card-desc">Bollywood, immigrant life, tech meetings, desi aunties &mdash; how well do you know your culture?</div>
+      <div class="card-meta">50 rounds &nbsp;·&nbsp; All ages 18+</div>
+      <span class="card-btn">Play now</span>
+    </a>
+
+    <a href="kids.html" class="game-card kids">
+      <div class="card-badge">Kids Edition</div>
+      <div class="card-title">Desi Kid Feud</div>
+      <div class="card-desc">School lunches, Bay Area life, Bollywood songs you secretly know &mdash; for the desi kids born here!</div>
+      <div class="card-meta">50 rounds &nbsp;·&nbsp; Ages 8–12</div>
+      <span class="card-btn">Play now</span>
+    </a>
+
+    <a href="word-arena.html" class="game-card words">
+      <div class="card-badge">Word Games</div>
+      <div class="card-title">Word Arena</div>
+      <div class="card-desc">Wordle-style word guessing + Wheel of Fortune puzzles. Bay Area edition for sharp minds.</div>
+      <div class="card-meta">20 puzzles each &nbsp;·&nbsp; Ages 10+</div>
+      <span class="card-btn">Play now</span>
+    </a>
+  </div>
+
+  <div class="footer">&copy; game night &nbsp;|&nbsp; built by the zing thing &nbsp;|&nbsp; reshshah.github.io/family_games</div>
+</div>
+
+</body>
+</html>
