@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Desi Couples Feud — Game Night | Built by the Zing Thing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Nunito:wght@400;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0a00;
+    --surface: #1a1200;
+    --surface2: #241900;
+    --surface3: #2e2000;
+    --gold: #f5c842;
+    --gold2: #e8a020;
+    --gold3: #fde68a;
+    --crimson: #c0392b;
+    --teal: #0d9488;
+    --border: rgba(245,200,66,0.2);
+    --text: #fdf6e3;
+    --muted: #a08040;
+    --muted2: #7a6030;
+    --display: 'Playfair Display', serif;
+    --sans: 'Nunito', sans-serif;
+    --mono: 'DM Mono', monospace;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Mandala-inspired bg */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(245,200,66,0.06) 0%, transparent 45%),
+      radial-gradient(circle at 85% 75%, rgba(192,57,43,0.06) 0%, transparent 45%),
+      radial-gradient(circle at 50% 50%, rgba(245,200,66,0.03) 0%, transparent 60%);
+    pointer-events: none; z-index: 0;
+  }
+
+  /* Gold filigree border top */
+  body::after {
+    content: '';
+    position: fixed; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, transparent, var(--gold2), var(--gold), var(--gold2), transparent);
+    z-index: 100;
+  }
+
+  .wrap { position: relative; z-index: 1; max-width: 820px; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
+
+  /* Header */
+  .header {
+    text-align: center; padding: 2rem 0 1.75rem;
+    animation: fadeDown 0.7s ease both;
+  }
+
+  .header-ornament {
+    font-size: 22px; letter-spacing: 12px; color: var(--gold2);
+    margin-bottom: 0.5rem; opacity: 0.7;
+  }
+
+  .tag {
+    display: inline-block; font-family: var(--mono);
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--gold2); border: 1px solid rgba(245,200,66,0.3);
+    background: rgba(245,200,66,0.05); padding: 5px 16px;
+    border-radius: 2px; margin-bottom: 1rem;
+  }
+
+  .header h1 {
+    font-family: var(--display);
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    font-weight: 900; line-height: 1.1; margin-bottom: 0.4rem;
+    background: linear-gradient(135deg, var(--gold3) 0%, var(--gold) 40%, var(--gold2) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+
+  .header p {
+    font-size: 14px; color: var(--muted); font-style: italic; letter-spacing: 0.05em;
+  }
+
+  /* Team scoreboard */
+  .scoreboard {
+    display: grid; grid-template-columns: 1fr auto 1fr;
+    gap: 12px; margin-bottom: 1.75rem; align-items: center;
+    animation: fadeUp 0.5s 0.1s ease both;
+  }
+
+  .team-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px; text-align: center;
+    position: relative; overflow: hidden;
+  }
+
+  .team-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  }
+  .team-card.team-a::before { background: linear-gradient(90deg, var(--crimson), #e74c3c); }
+  .team-card.team-b::before { background: linear-gradient(90deg, var(--teal), #14b8a6); }
+
+  .team-name-input {
+    font-family: var(--display); font-size: 15px; font-weight: 700;
+    color: var(--text); background: transparent; border: none;
+    border-bottom: 1px solid var(--border); text-align: center;
+    width: 100%; outline: none; margin-bottom: 6px; padding-bottom: 4px;
+  }
+  .team-name-input::placeholder { color: var(--muted2); font-style: italic; }
+
+  .team-score {
+    font-family: var(--mono); font-size: 32px; font-weight: 500;
+    line-height: 1;
+  }
+  .team-card.team-a .team-score { color: #e74c3c; }
+  .team-card.team-b .team-score { color: #14b8a6; }
+
+  .team-label { font-size: 10px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 3px; }
+
+  .vs-badge {
+    font-family: var(--display); font-size: 1.5rem; font-weight: 900;
+    color: var(--gold); text-align: center;
+  }
+
+  /* HUD */
+  .hud-bar {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;
+    margin-bottom: 1.25rem; animation: fadeUp 0.5s 0.15s ease both;
+  }
+
+  .hud-cell {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 10px 8px; text-align: center;
+  }
+
+  .hud-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; }
+  .hud-val { font-family: var(--mono); font-size: 20px; color: var(--gold); }
+
+  /* Progress */
+  .progress-wrap { margin-bottom: 1.25rem; }
+  .progress-label { font-family: var(--mono); font-size: 9px; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; text-align: center; margin-bottom: 6px; }
+  .progress-bar { display: flex; gap: 4px; justify-content: center; flex-wrap: wrap; }
+  .pdot { width: 14px; height: 5px; border-radius: 2px; background: var(--surface2); border: 1px solid var(--border); transition: all 0.3s; cursor: pointer; }
+  .pdot.done { background: var(--gold2); border-color: var(--gold2); }
+  .pdot.current { background: var(--gold); border-color: var(--gold); }
+
+  /* Question card */
+  .q-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.75rem 1.5rem;
+    margin-bottom: 1rem;
+    animation: fadeUp 0.5s ease both;
+    position: relative; overflow: hidden;
+    box-shadow: 0 4px 32px rgba(245,200,66,0.05);
+  }
+
+  .q-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--crimson), var(--gold), var(--teal));
+  }
+
+  /* Corner ornaments */
+  .q-card::after {
+    content: '❖';
+    position: absolute; top: 10px; right: 14px;
+    color: var(--gold2); font-size: 12px; opacity: 0.4;
+  }
+
+  .q-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 8px; }
+  .q-num { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 0.1em; }
+  .q-cat {
+    font-family: var(--mono); font-size: 10px; padding: 4px 12px; border-radius: 2px;
+    background: rgba(245,200,66,0.08); color: var(--gold);
+    border: 1px solid rgba(245,200,66,0.2); letter-spacing: 0.1em; text-transform: uppercase;
+  }
+
+  .q-text {
+    font-family: var(--display); font-size: clamp(17px, 4vw, 22px);
+    font-weight: 700; line-height: 1.4; color: var(--text); margin-bottom: 1.5rem;
+  }
+
+  /* Answers */
+  .answers { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 1.25rem; }
+  @media (max-width: 480px) { .answers { grid-template-columns: 1fr; } .wrap { padding: 1rem 0.75rem 3rem; } .q-card { padding: 1.25rem 1rem; } }
+
+  .ans-btn {
+    background: var(--surface2); border: 1px solid rgba(245,200,66,0.12);
+    border-radius: var(--radius-sm); padding: 12px 14px; display: flex;
+    align-items: center; gap: 10px; cursor: pointer; transition: all 0.2s ease;
+    font-family: var(--sans); font-size: 14px; font-weight: 700;
+    color: var(--muted); text-align: left; width: 100%;
+  }
+
+  .ans-btn:not(.revealed):not(.hidden-slot):hover {
+    border-color: var(--gold2); color: var(--text); background: var(--surface3);
+    transform: translateY(-1px); box-shadow: 0 3px 12px rgba(245,200,66,0.1);
+  }
+
+  .ans-btn .rank { font-family: var(--mono); font-size: 10px; color: var(--muted); min-width: 22px; flex-shrink: 0; }
+  .ans-btn .ans-label { flex: 1; line-height: 1.35; }
+  .ans-btn .pct { font-family: var(--mono); font-size: 11px; color: var(--gold); flex-shrink: 0; }
+
+  .ans-btn.revealed { background: rgba(245,200,66,0.08); border-color: rgba(245,200,66,0.3); color: var(--text); cursor: default; }
+  .ans-btn.revealed .rank { color: var(--gold); }
+  .ans-btn.tap-to-reveal {
+    border: 1px dashed rgba(245,200,66,0.3); cursor: pointer;
+  }
+  .ans-btn.tap-to-reveal:hover { border-color: var(--gold); background: var(--surface3); transform: translateY(-1px); }
+  .ans-btn.hidden-slot { opacity: 0.4; cursor: default; }
+
+  /* Strikes */
+  .strikes-row { display: flex; align-items: center; gap: 8px; margin-bottom: 1.25rem; flex-wrap: wrap; }
+  .s-label { font-family: var(--mono); font-size: 9px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-right: 4px; }
+  .strike {
+    width: 30px; height: 30px; border-radius: var(--radius-sm);
+    border: 1px solid rgba(255,255,255,0.08); background: var(--surface2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 900; color: transparent; transition: all 0.3s;
+  }
+  .strike.active { background: rgba(192,57,43,0.2); border-color: rgba(192,57,43,0.5); color: var(--crimson); animation: strikeIn 0.4s ease; }
+
+  @keyframes strikeIn { 0% { transform: scale(1.4); } 60% { transform: scale(0.9); } 100% { transform: scale(1); } }
+
+  /* Buttons */
+  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  .btn {
+    font-family: var(--sans); font-size: 13px; font-weight: 800;
+    padding: 10px 18px; border-radius: var(--radius-sm);
+    border: 1px solid var(--border); background: transparent;
+    color: var(--text); cursor: pointer; transition: all 0.2s;
+  }
+  .btn:hover { background: var(--surface2); border-color: var(--gold2); color: var(--gold); }
+  .btn.primary { background: linear-gradient(135deg, var(--gold2), var(--gold)); color: #000; border: none; font-weight: 900; }
+  .btn.primary:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn.strike-btn { border-color: rgba(192,57,43,0.3); color: var(--crimson); }
+  .btn.strike-btn:hover { background: rgba(192,57,43,0.1); border-color: var(--crimson); }
+  .btn.clear-btn { border-color: rgba(255,255,255,0.1); color: var(--muted); }
+  .btn.clear-btn:hover { background: var(--surface2); color: var(--muted2); }
+  .btn.hidden { display: none; }
+
+  /* Point award */
+  .award-row {
+    display: flex; gap: 8px; margin-bottom: 1rem; flex-wrap: wrap;
+  }
+  .award-btn {
+    flex: 1; font-family: var(--sans); font-size: 13px; font-weight: 800;
+    padding: 10px 12px; border-radius: var(--radius-sm); cursor: pointer;
+    transition: all 0.2s; border: 1.5px solid transparent; text-align: center;
+  }
+  .award-btn.team-a-award {
+    background: rgba(231,76,60,0.1); border-color: rgba(231,76,60,0.3); color: #e74c3c;
+  }
+  .award-btn.team-a-award:hover { background: rgba(231,76,60,0.2); }
+  .award-btn.team-b-award {
+    background: rgba(20,184,166,0.1); border-color: rgba(20,184,166,0.3); color: #14b8a6;
+  }
+  .award-btn.team-b-award:hover { background: rgba(20,184,166,0.2); }
+  .award-btn.hidden { display: none; }
+
+  /* Result msg */
+  .result-msg { font-size: 13px; font-weight: 800; padding: 10px 14px; border-radius: var(--radius-sm); margin-bottom: 1rem; display: none; line-height: 1.4; }
+  .result-msg.show { display: block; }
+  .result-msg.win { background: rgba(245,200,66,0.08); border: 1px solid rgba(245,200,66,0.25); color: var(--gold); }
+  .result-msg.lose { background: rgba(192,57,43,0.08); border: 1px solid rgba(192,57,43,0.25); color: var(--crimson); }
+
+  .card-divider { height: 1px; background: var(--border); margin: 1.1rem 0; }
+
+  /* Final */
+  .final { display: none; text-align: center; padding: 3rem 1.5rem; animation: fadeUp 0.6s ease both; }
+  .final.show { display: block; }
+  .final-trophy { font-size: 64px; margin-bottom: 0.75rem; }
+  .final-winner { font-family: var(--display); font-size: clamp(1.5rem, 5vw, 2.5rem); font-weight: 900; color: var(--gold); margin-bottom: 0.5rem; }
+  .final-scores { font-family: var(--mono); font-size: 16px; color: var(--muted); margin-bottom: 1.5rem; line-height: 2; }
+  .final-msg { font-family: var(--display); font-size: 17px; font-style: italic; color: var(--text); margin-bottom: 2rem; max-width: 440px; margin-left: auto; margin-right: auto; line-height: 1.6; }
+
+  @keyframes pulse-gold {
+    0% { box-shadow: 0 0 0 0 rgba(245,200,66,0.5); }
+    70% { box-shadow: 0 0 0 12px rgba(245,200,66,0); }
+    100% { box-shadow: 0 0 0 0 rgba(245,200,66,0); }
+  }
+  .ans-btn.pulse { animation: pulse-gold 0.5s ease; }
+
+  @keyframes fadeDown { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeUp   { from { opacity: 0; transform: translateY(14px);  } to { opacity: 1; transform: translateY(0); } }
+
+  .footer { text-align: center; padding-top: 3rem; font-family: var(--mono); font-size: 10px; color: var(--muted2); letter-spacing: 0.12em; text-transform: uppercase; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <div class="header-ornament">✦ ✦ ✦</div>
+    <div class="tag">Game Night &mdash; Built by the Zing Thing</div>
+    <h1>Desi Couples Feud</h1>
+    <p>100 married desis surveyed &mdash; name the top answers</p>
+  </div>
+
+  <!-- Scoreboard -->
+  <div class="scoreboard" id="scoreboard">
+    <div class="team-card team-a">
+      <input class="team-name-input" id="team-a-name" placeholder="Couple A" maxlength="20" />
+      <div class="team-score" id="team-a-score">0</div>
+      <div class="team-label">points</div>
+    </div>
+    <div class="vs-badge">VS</div>
+    <div class="team-card team-b">
+      <input class="team-name-input" id="team-b-name" placeholder="Couple B" maxlength="20" />
+      <div class="team-score" id="team-b-score">0</div>
+      <div class="team-label">points</div>
+    </div>
+  </div>
+
+  <!-- HUD -->
+  <div class="hud-bar">
+    <div class="hud-cell">
+      <div class="hud-label">Round</div>
+      <div class="hud-val" id="qcount">1 / 30</div>
+    </div>
+    <div class="hud-cell">
+      <div class="hud-label">Strikes</div>
+      <div class="hud-val" id="strike-count" style="color:var(--crimson)">0 / 3</div>
+    </div>
+    <div class="hud-cell">
+      <div class="hud-label">Round Pts</div>
+      <div class="hud-val" id="round-pts">0</div>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-wrap">
+    <div class="progress-label">Progress</div>
+    <div class="progress-bar" id="progress"></div>
+  </div>
+
+  <!-- Game area -->
+  <div id="game-area">
+    <div class="q-card" id="q-card">
+      <div class="q-meta">
+        <span class="q-num" id="q-num">Question 01</span>
+        <span class="q-cat" id="q-cat">Loading</span>
+      </div>
+      <div class="q-text" id="q-text">Loading...</div>
+
+      <div class="strikes-row">
+        <span class="s-label">Strikes</span>
+        <div class="strike" id="s1">✕</div>
+        <div class="strike" id="s2">✕</div>
+        <div class="strike" id="s3">✕</div>
+      </div>
+
+      <div class="answers" id="answers"></div>
+
+      <div class="result-msg" id="result-msg"></div>
+
+      <!-- Award points to team after round ends -->
+      <div class="award-row" id="award-row">
+        <button class="award-btn team-a-award hidden" id="award-a" onclick="awardPoints('a')">Give pts to <span id="award-a-name">Couple A</span></button>
+        <button class="award-btn team-b-award hidden" id="award-b" onclick="awardPoints('b')">Give pts to <span id="award-b-name">Couple B</span></button>
+      </div>
+
+      <div class="card-divider"></div>
+
+      <div class="btn-row">
+        <button class="btn primary" id="reveal-btn" onclick="revealAll()">Reveal answers</button>
+        <button class="btn strike-btn" id="strike-btn" onclick="addStrike()">+ Strike</button>
+        <button class="btn clear-btn" id="clear-btn" onclick="clearStrike()">− Strike</button>
+        <button class="btn hidden" id="next-btn" onclick="nextQuestion()">Next round →</button>
+        <button class="btn hidden" id="back-btn" onclick="prevQuestion()">← Back</button>
+        <button class="btn hidden" id="show-answers-btn" onclick="showAnswers()">Show answers</button>
+        <button class="btn hidden" id="hide-answers-btn" onclick="hideAnswers()">Hide answers</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Final -->
+  <div class="final" id="final">
+    <div class="final-trophy">🏆</div>
+    <div class="final-winner" id="final-winner">—</div>
+    <div class="final-scores" id="final-scores"></div>
+    <div class="final-msg" id="final-msg"></div>
+    <div class="btn-row" style="justify-content:center; gap:12px;">
+      <button class="btn primary" onclick="restartGame()">Play again</button>
+      <button class="btn" onclick="window.location.reload()">Reset</button>
+    </div>
+  </div>
+
+  <div class="footer">&copy; game night &nbsp;|&nbsp; built by the zing thing &nbsp;|&nbsp; reshshah.github.io/family_games</div>
+</div>
+
+<script>
+const questions = [
+  {
+    cat: "Married life",
+    text: "Name something a husband always forgets to do around the house",
+    answers: [
+      { text: "Put the toilet seat down", pts: 38 },
+      { text: "Take out the garbage", pts: 27 },
+      { text: "Replace empty toilet roll", pts: 17 },
+      { text: "Turn off the lights", pts: 11 },
+      { text: "Lock the front door", pts: 7 },
+    ]
+  },
+  {
+    cat: "In-laws",
+    text: "Name something a desi mother-in-law always has an opinion about",
+    answers: [
+      { text: "How you cook the food", pts: 42 },
+      { text: "How you raise the kids", pts: 28 },
+      { text: "How clean the house is", pts: 15 },
+      { text: "What you spend money on", pts: 10 },
+      { text: "How you dress", pts: 5 },
+    ]
+  },
+  {
+    cat: "Kitchen",
+    text: "Name something every desi wife says her husband does wrong in the kitchen",
+    answers: [
+      { text: "Doesn't wash dishes properly", pts: 36 },
+      { text: "Puts things in wrong place", pts: 25 },
+      { text: "Doesn't add enough masala", pts: 19 },
+      { text: "Burns the roti", pts: 13 },
+      { text: "Doesn't follow the recipe", pts: 7 },
+    ]
+  },
+  {
+    cat: "Bollywood nostalgia",
+    text: "Name a Bollywood actor from the 70s/80s every couple argued about",
+    answers: [
+      { text: "Amitabh Bachchan", pts: 44 },
+      { text: "Rajesh Khanna", pts: 26 },
+      { text: "Dharmendra", pts: 15 },
+      { text: "Mithun Chakraborty", pts: 10 },
+      { text: "Vinod Khanna", pts: 5 },
+    ]
+  },
+  {
+    cat: "Married life",
+    text: "Name something couples fight about on road trips",
+    answers: [
+      { text: "Which route to take / GPS vs directions", pts: 39 },
+      { text: "Temperature in the car", pts: 26 },
+      { text: "What music to play", pts: 18 },
+      { text: "When to stop for food", pts: 12 },
+      { text: "Driving speed", pts: 5 },
+    ]
+  },
+  {
+    cat: "Desi household",
+    text: "Name something every desi husband says when asked to help with housework",
+    answers: [
+      { text: "\"I'm tired from work\"", pts: 41 },
+      { text: "\"I'll do it later\"", pts: 29 },
+      { text: "\"You do it better than me\"", pts: 17 },
+      { text: "\"Tell me what to do\"", pts: 9 },
+      { text: "\"I just did it last week!\"", pts: 4 },
+    ]
+  },
+  {
+    cat: "In-laws",
+    text: "Name something desi in-laws say when they first visit your new home",
+    answers: [
+      { text: "\"The kitchen is very small\"", pts: 37 },
+      { text: "\"Why so far from the temple?\"", pts: 26 },
+      { text: "\"No guest room?\"", pts: 18 },
+      { text: "\"In our house we had...\"", pts: 13 },
+      { text: "\"Why is everything rented?\"", pts: 6 },
+    ]
+  },
+  {
+    cat: "Bollywood nostalgia",
+    text: "Name a Bollywood film every 55+ desi couple has watched together",
+    answers: [
+      { text: "Sholay", pts: 44 },
+      { text: "Deewar", pts: 24 },
+      { text: "Mughal-E-Azam", pts: 16 },
+      { text: "Aradhana", pts: 10 },
+      { text: "Bobby", pts: 6 },
+    ]
+  },
+  {
+    cat: "Married life",
+    text: "Name something wives say their husbands are addicted to",
+    answers: [
+      { text: "Cricket / watching sports", pts: 40 },
+      { text: "Their phone", pts: 28 },
+      { text: "The news channel", pts: 17 },
+      { text: "Chai / tea", pts: 10 },
+      { text: "Napping on the sofa", pts: 5 },
+    ]
+  },
+  {
+    cat: "Kitchen",
+    text: "Name something a desi husband says when wife is not home and he has to cook",
+    answers: [
+      { text: "\"I'll order from outside\"", pts: 46 },
+      { text: "\"I'll make Maggi / instant noodles\"", pts: 27 },
+      { text: "\"I'll just eat bread\"", pts: 14 },
+      { text: "\"I'll call my mother\"", pts: 9 },
+      { text: "\"I'll survive on biscuits\"", pts: 4 },
+    ]
+  },
+  {
+    cat: "Old India",
+    text: "Name something couples in India did for fun in the 70s/80s that doesn't exist anymore",
+    answers: [
+      { text: "Watch Doordarshan together", pts: 42 },
+      { text: "Go to the cinema hall", pts: 27 },
+      { text: "Listen to radio / HMV records", pts: 16 },
+      { text: "Evening walks in the colony", pts: 10 },
+      { text: "Card games / carrom with neighbors", pts: 5 },
+    ]
+  },
+  {
+    cat: "Married life",
+    text: "Name something a desi wife says her husband is always wrong about",
+    answers: [
+      { text: "Remembering anniversaries / dates", pts: 40 },
+      { text: "Estimating how long something takes", pts: 26 },
+      { text: "Directions — refuses to ask for help", pts: 18 },
+      { text: "Money decisions", pts: 11 },
+      { text: "Parenting choices", pts: 5 },
+    ]
+  },
+  {
+    cat: "In-laws",
+    text: "Name something a daughter-in-law secretly thinks but never says",
+    answers: [
+      { text: "\"She spoiled him completely\"", pts: 38 },
+      { text: "\"This recipe is not that good\"", pts: 26 },
+      { text: "\"We need more privacy\"", pts: 18 },
+      { text: "\"Why does she visit so often?\"", pts: 13 },
+      { text: "\"He listens to her more than me\"", pts: 5 },
+    ]
+  },
+  {
+    cat: "Desi household",
+    text: "Name something desi couples argue about before guests arrive",
+    answers: [
+      { text: "Whose fault it is the house is messy", pts: 37 },
+      { text: "What food to serve", pts: 26 },
+      { text: "Who invited too many people", pts: 18 },
+      { text: "What to wear", pts: 13 },
+      { text: "Whether the house is clean enough", pts: 6 },
+    ]
+  },
+  {
+    cat: "Bollywood nostalgia",
+    text: "Name a Bollywood actress from the 70s/80s every husband had a crush on",
+    answers: [
+      { text: "Hema Malini", pts: 40 },
+      { text: "Rekha", pts: 28 },
+      { text: "Zeenat Aman", pts: 17 },
+      { text: "Sridevi", pts: 10 },
+      { text: "Parveen Babi", pts: 5 },
+    ]
+  },
+  {
+    cat: "Married life",
+    text: "Name something desi couples disagree about when raising kids in the US",
+    answers: [
+      { text: "How strict to be with studies", pts: 38 },
+      { text: "Screen time limits", pts: 26 },
+      { text: "Sending them to India in summer", pts: 17 },
+      { text: "How much freedom to give", pts: 13 },
+      { text: "Which language to speak at home", pts: 6 },
+    ]
+  },
+  {
+    cat: "Kitchen",
+    text: "Name something every desi wife has said about her husband's chai",
+    answers: [
+      { text: "\"Too much sugar\"", pts: 37 },
+      { text: "\"Not enough milk\"", pts: 26 },
+      { text: "\"You never add ginger\"", pts: 18 },
+      { text: "\"It's too weak\"", pts: 13 },
+      { text: "\"Mine is better\"", pts: 6 },
+    ]
+  },
+  {
+    cat: "Old India",
+    text: "Name something from India that every 55+ desi couple misses",
+    answers: [
+      { text: "Street food — chaat, pani puri", pts: 40 },
+      { text: "Joint family gatherings", pts: 27 },
+      { text: "Monsoon season", pts: 17 },
+      { text: "Old neighborhood and friends", pts: 11 },
+      { text: "Domestic help at home", pts: 5 },
+    ]
+  },
+  {
+    cat: "In-laws",
+    text: "Name something a son-in-law does to impress his in-laws",
+    answers: [
+      { text: "Bring sweets or mithai", pts: 38 },
+      { text: "Touch their feet respectfully", pts: 27 },
+      { text: "Talk about his job / salary", pts: 17 },
+      { text: "Offer to pay for dinner", pts: 12 },
+      { text: "Praise the wife's cooking", pts: 6 },
+    ]
+  },
+  {
+    cat: "Married life",
+    text: "Name something desi couples say to each other after 25+ years of marriage",
+    answers: [
+      { text: "\"You never listen to me\"", pts: 38 },
+      { text: "\"I told you so\"", pts: 27 },
+      { text: "\"Just do it my way\"", pts: 18 },
+      { text: "\"You've changed\"", pts: 11 },
+      { text: "\"I know what you're thinking\"", pts: 6 },
+    ]
+  },
+  {
+    cat: "Desi household",
+    text: "Name something desi husbands do that their wives find endearing",
+    answers: [
+      { text: "Make morning chai without being asked", pts: 40 },
+      { text: "Still open the car door", pts: 25 },
+      { text: "Remember food preferences", pts: 18 },
+      { text: "Defend wife to his own parents", pts: 12 },
+      { text: "Give forehead kiss", pts: 5 },
+    ]
+  },
+  {
+    cat: "Bollywood nostalgia",
+    text: "Name a song from old Bollywood that every desi couple knows by heart",
+    answers: [
+      { text: "Tere Mere Sapne (Guide)", pts: 34 },
+      { text: "Lag Ja Gale (Woh Kaun Thi)", pts: 26 },
+      { text: "Mere Sapno Ki Rani (Aradhana)", pts: 20 },
+      { text: "Ek Pyaar Ka Nagma Hai", pts: 13 },
+      { text: "Kora Kagaz Tha (Aradhana)", pts: 7 },
+    ]
+  },
+  {
+    cat: "Old India",
+    text: "Name something couples did on their honeymoon in India in the 70s/80s",
+    answers: [
+      { text: "Kashmir trip", pts: 40 },
+      { text: "Shimla or hill station", pts: 28 },
+      { text: "Goa", pts: 16 },
+      { text: "Ooty or Kodaikanal", pts: 10 },
+      { text: "Delhi sightseeing tour", pts: 6 },
+    ]
+  },
+  {
+    cat: "Married life",
+    text: "Name something a desi husband buys without telling his wife",
+    answers: [
+      { text: "New gadget / electronics", pts: 38 },
+      { text: "Car upgrade / accessories", pts: 26 },
+      { text: "Expensive watch", pts: 17 },
+      { text: "Cricket equipment", pts: 13 },
+      { text: "Extra mithai for himself", pts: 6 },
+    ]
+  },
+  {
+    cat: "Kitchen",
+    text: "Name a dish every desi wife makes that her husband brags about to friends",
+    answers: [
+      { text: "Biryani", pts: 40 },
+      { text: "Dal makhani", pts: 26 },
+      { text: "Rajma", pts: 17 },
+      { text: "Halwa or kheer", pts: 12 },
+      { text: "Dum aloo", pts: 5 },
+    ]
+  },
+  {
+    cat: "In-laws",
+    text: "Name something a mother-in-law teaches her son before marriage that backfires",
+    answers: [
+      { text: "\"Always take my side\"", pts: 39 },
+      { text: "\"Your wife should cook daily\"", pts: 27 },
+      { text: "\"Money should come to me first\"", pts: 17 },
+      { text: "\"Never do housework — it's beneath you\"", pts: 11 },
+      { text: "\"Call me every day\"", pts: 6 },
+    ]
+  },
+  {
+    cat: "Desi household",
+    text: "Name something desi couples keep doing even after kids have left home",
+    answers: [
+      { text: "Cook huge amounts of food", pts: 38 },
+      { text: "Leave their room ready for them", pts: 26 },
+      { text: "Watch the same serials together", pts: 18 },
+      { text: "Fight about the same things", pts: 12 },
+      { text: "Call each other's parents", pts: 6 },
+    ]
+  },
+  {
+    cat: "Old India",
+    text: "Name something desi couples saved up for in the 80s that seemed huge then",
+    answers: [
+      { text: "A colour TV", pts: 42 },
+      { text: "A scooter or motorcycle", pts: 28 },
+      { text: "A refrigerator", pts: 16 },
+      { text: "A telephone landline connection", pts: 10 },
+      { text: "A washing machine", pts: 4 },
+    ]
+  },
+  {
+    cat: "Married life",
+    text: "Name something both husband and wife claim they do more of",
+    answers: [
+      { text: "Housework / cleaning", pts: 40 },
+      { text: "Managing the kids", pts: 27 },
+      { text: "Earning / managing money", pts: 17 },
+      { text: "Dealing with in-laws", pts: 11 },
+      { text: "Planning holidays", pts: 5 },
+    ]
+  },
+  {
+    cat: "Bollywood nostalgia",
+    text: "Name something from old Bollywood that would never fly today",
+    answers: [
+      { text: "Hero stalking heroine until she loves him", pts: 38 },
+      { text: "Comic sidekick making fun of poor people", pts: 24 },
+      { text: "Item numbers with very old fashioned lyrics", pts: 18 },
+      { text: "Every villain twirling a moustache", pts: 13 },
+      { text: "Rain = instant romance, always", pts: 7 },
+    ]
+  },
+];
+
+// ===================== STATE =====================
+let currentQ = 0, teamAScore = 0, teamBScore = 0;
+let roundPts = 0, pointsAwarded = false;
+
+const state = questions.map(q => ({
+  revealed: new Array(q.answers.length).fill(false),
+  strikes: 0, done: false, won: null, answersVisible: true,
+  shownWhileHidden: new Array(q.answers.length).fill(false)
+}));
+
+// ===================== INIT =====================
+function initQuestion() {
+  const q = questions[currentQ];
+  const s = state[currentQ];
+  roundPts = s.revealed.reduce((sum, r, i) => r ? sum + q.answers[i].pts : sum, 0);
+  pointsAwarded = false;
+
+  document.getElementById('q-num').textContent = `Question ${String(currentQ + 1).padStart(2,'0')}`;
+  document.getElementById('q-cat').textContent = q.cat;
+  document.getElementById('q-text').textContent = q.text;
+  document.getElementById('qcount').textContent = `${currentQ + 1} / ${questions.length}`;
+  document.getElementById('strike-count').textContent = `${s.strikes} / 3`;
+  document.getElementById('round-pts').textContent = roundPts;
+
+  ['s1','s2','s3'].forEach((id, i) => document.getElementById(id).classList.toggle('active', i < s.strikes));
+
+  const rm = document.getElementById('result-msg');
+  if (s.done && s.won === true)       { rm.className = 'result-msg win show'; rm.textContent = 'Board cleared! Award the points to a team.'; }
+  else if (s.done && s.won === false) { rm.className = 'result-msg lose show'; rm.textContent = 'Three strikes! Reveal answers if needed, then award points.'; }
+  else if (s.done && s.won === null)  { rm.className = 'result-msg win show'; rm.textContent = 'All answers revealed! Award the points to a team.'; }
+  else                                { rm.className = 'result-msg'; rm.textContent = ''; }
+
+  const revealBtn  = document.getElementById('reveal-btn');
+  const strikeBtn  = document.getElementById('strike-btn');
+  const clearBtn   = document.getElementById('clear-btn');
+  const nextBtn    = document.getElementById('next-btn');
+  const backBtn    = document.getElementById('back-btn');
+  const showBtn    = document.getElementById('show-answers-btn');
+  const hideBtn    = document.getElementById('hide-answers-btn');
+  const hasRevealed = s.revealed.some(r => r);
+
+  if (s.done) {
+    s.won === false ? revealBtn.classList.remove('hidden') : revealBtn.classList.add('hidden');
+    strikeBtn.classList.add('hidden'); clearBtn.classList.add('hidden');
+    nextBtn.classList.remove('hidden');
+    showAwardBtns(true);
+  } else {
+    revealBtn.classList.remove('hidden'); strikeBtn.classList.remove('hidden');
+    clearBtn.classList.remove('hidden'); nextBtn.classList.add('hidden');
+    showAwardBtns(false);
+  }
+
+  showBtn.classList.toggle('hidden', !hasRevealed || s.answersVisible);
+  hideBtn.classList.toggle('hidden', !hasRevealed || !s.answersVisible);
+  backBtn.classList.toggle('hidden', currentQ === 0);
+
+  renderAnswers();
+  updateProgress();
+  syncAwardNames();
+}
+
+function showAwardBtns(show) {
+  document.getElementById('award-a').classList.toggle('hidden', !show);
+  document.getElementById('award-b').classList.toggle('hidden', !show);
+}
+
+function syncAwardNames() {
+  const nameA = document.getElementById('team-a-name').value || 'Couple A';
+  const nameB = document.getElementById('team-b-name').value || 'Couple B';
+  document.getElementById('award-a-name').textContent = nameA;
+  document.getElementById('award-b-name').textContent = nameB;
+}
+
+// ===================== RENDER =====================
+function renderAnswers() {
+  const q = questions[currentQ];
+  const s = state[currentQ];
+  const container = document.getElementById('answers');
+  container.innerHTML = '';
+  q.answers.forEach((a, i) => {
+    const btn = document.createElement('button');
+    const isVisible = s.answersVisible || s.shownWhileHidden[i];
+    if (s.revealed[i] && isVisible) {
+      btn.className = 'ans-btn revealed';
+      btn.innerHTML = `<span class="rank">#${i+1}</span><span class="ans-label">${a.text}</span><span class="pct">${a.pts}%</span>`;
+    } else {
+      btn.className = 'ans-btn hidden-slot';
+      btn.innerHTML = `<span class="rank">#${i+1}</span><span class="ans-label" style="color:#3a2800;font-family:var(--mono);font-size:12px">▓▓▓▓▓▓▓▓▓▓</span>`;
+      if (!s.done) {
+        btn.classList.remove('hidden-slot');
+        btn.style.cursor = 'pointer';
+        btn.onclick = () => tapReveal(i);
+      }
+    }
+    container.appendChild(btn);
+  });
+}
+
+function tapReveal(index) {
+  const s = state[currentQ];
+  if (s.done) return;
+  if (s.answersVisible) { handleGuess(index); }
+  else {
+    if (!s.revealed[index]) handleGuess(index);
+    s.shownWhileHidden[index] = true;
+    renderAnswers();
+    document.getElementById('answers').children[index].classList.add('pulse');
+    updateShowHideBtns();
+  }
+}
+
+function handleGuess(index) {
+  const s = state[currentQ];
+  if (s.done || s.revealed[index]) return;
+  const q = questions[currentQ];
+  s.revealed[index] = true;
+  roundPts += q.answers[index].pts;
+  document.getElementById('round-pts').textContent = roundPts;
+  renderAnswers();
+  document.getElementById('answers').children[index].classList.add('pulse');
+  updateShowHideBtns();
+  if (s.revealed.every(r => r)) endQuestion(true);
+}
+
+function updateShowHideBtns() {
+  const s = state[currentQ];
+  const hasRevealed = s.revealed.some(r => r);
+  document.getElementById('show-answers-btn').classList.toggle('hidden', !hasRevealed || s.answersVisible);
+  document.getElementById('hide-answers-btn').classList.toggle('hidden', !hasRevealed || !s.answersVisible);
+}
+
+// ===================== STRIKES =====================
+function addStrike() {
+  const s = state[currentQ];
+  if (s.done) return;
+  s.strikes++;
+  document.getElementById('strike-count').textContent = `${s.strikes} / 3`;
+  if (s.strikes >= 1) document.getElementById('s1').classList.add('active');
+  if (s.strikes >= 2) document.getElementById('s2').classList.add('active');
+  if (s.strikes >= 3) { document.getElementById('s3').classList.add('active'); endQuestion(false); }
+}
+
+function clearStrike() {
+  const s = state[currentQ];
+  if (s.done || s.strikes === 0) return;
+  s.strikes--;
+  document.getElementById('strike-count').textContent = `${s.strikes} / 3`;
+  if (s.strikes < 3) document.getElementById('s3').classList.remove('active');
+  if (s.strikes < 2) document.getElementById('s2').classList.remove('active');
+  if (s.strikes < 1) document.getElementById('s1').classList.remove('active');
+}
+
+// ===================== REVEAL =====================
+function revealAll() {
+  const s = state[currentQ];
+  const q = questions[currentQ];
+  q.answers.forEach((a, i) => {
+    if (!s.revealed[i]) { s.revealed[i] = true; roundPts += a.pts; }
+  });
+  s.done = true; s.won = s.won === false ? false : null;
+  document.getElementById('round-pts').textContent = roundPts;
+  renderAnswers();
+  document.getElementById('reveal-btn').classList.add('hidden');
+  document.getElementById('strike-btn').classList.add('hidden');
+  document.getElementById('clear-btn').classList.add('hidden');
+  document.getElementById('next-btn').classList.remove('hidden');
+  showAwardBtns(true); syncAwardNames();
+  const rm = document.getElementById('result-msg');
+  rm.className = 'result-msg win show';
+  rm.textContent = 'All answers revealed! Award the points to a team.';
+}
+
+function showAnswers() {
+  const s = state[currentQ];
+  s.answersVisible = true;
+  s.shownWhileHidden = new Array(questions[currentQ].answers.length).fill(false);
+  updateShowHideBtns(); renderAnswers();
+}
+
+function hideAnswers() {
+  const s = state[currentQ];
+  s.answersVisible = false;
+  s.shownWhileHidden = new Array(questions[currentQ].answers.length).fill(false);
+  updateShowHideBtns(); renderAnswers();
+}
+
+function endQuestion(won) {
+  const s = state[currentQ];
+  s.done = true; s.won = won;
+  document.getElementById('strike-btn').classList.add('hidden');
+  document.getElementById('clear-btn').classList.add('hidden');
+  document.getElementById('next-btn').classList.remove('hidden');
+  const rm = document.getElementById('result-msg');
+  if (won) {
+    document.getElementById('reveal-btn').classList.add('hidden');
+    rm.className = 'result-msg win show';
+    rm.textContent = 'Board cleared! Award the points to a team.';
+  } else {
+    document.getElementById('reveal-btn').classList.remove('hidden');
+    rm.className = 'result-msg lose show';
+    rm.textContent = 'Three strikes! Reveal answers if needed, then award points.';
+  }
+  showAwardBtns(true); syncAwardNames();
+}
+
+// ===================== AWARD POINTS =====================
+function awardPoints(team) {
+  if (pointsAwarded) return;
+  pointsAwarded = true;
+  if (team === 'a') {
+    teamAScore += roundPts;
+    document.getElementById('team-a-score').textContent = teamAScore;
+  } else {
+    teamBScore += roundPts;
+    document.getElementById('team-b-score').textContent = teamBScore;
+  }
+  document.getElementById('award-a').disabled = true;
+  document.getElementById('award-b').disabled = true;
+  const nameA = document.getElementById('team-a-name').value || 'Couple A';
+  const nameB = document.getElementById('team-b-name').value || 'Couple B';
+  const rm = document.getElementById('result-msg');
+  rm.className = 'result-msg win show';
+  rm.textContent = `+${roundPts} pts awarded to ${team === 'a' ? nameA : nameB}!`;
+}
+
+// ===================== NAVIGATION =====================
+function animateCard(dir, cb) {
+  const card = document.getElementById('q-card');
+  card.style.transition = 'opacity 0.1s ease, transform 0.1s ease';
+  card.style.opacity = '0';
+  card.style.transform = dir === 'forward' ? 'translateY(10px)' : 'translateY(-10px)';
+  setTimeout(() => {
+    card.style.transition = 'none'; card.style.opacity = ''; card.style.transform = '';
+    cb(); card.style.animation = 'fadeUp 0.35s ease both';
+  }, 110);
+}
+
+function nextQuestion() {
+  currentQ++;
+  if (currentQ >= questions.length) { showFinal(); return; }
+  animateCard('forward', initQuestion);
+}
+
+function prevQuestion() {
+  if (currentQ === 0) return;
+  state[currentQ - 1].answersVisible = false;
+  state[currentQ - 1].shownWhileHidden = new Array(questions[currentQ - 1].answers.length).fill(false);
+  currentQ--;
+  animateCard('back', initQuestion);
+}
+
+function updateProgress() {
+  const container = document.getElementById('progress');
+  container.innerHTML = '';
+  questions.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'pdot' + (i < currentQ ? ' done' : i === currentQ ? ' current' : '');
+    if (state[i].done || i <= currentQ) {
+      d.style.cursor = 'pointer';
+      d.onclick = () => { const dir = i > currentQ ? 'forward' : 'back'; currentQ = i; animateCard(dir, initQuestion); };
+    }
+    container.appendChild(d);
+  });
+}
+
+// ===================== FINAL =====================
+function showFinal() {
+  document.getElementById('game-area').style.display = 'none';
+  document.getElementById('progress').style.display = 'none';
+  document.getElementById('scoreboard').style.display = 'none';
+  const fs = document.getElementById('final');
+  fs.classList.add('show');
+  const nameA = document.getElementById('team-a-name').value || 'Couple A';
+  const nameB = document.getElementById('team-b-name').value || 'Couple B';
+  let winner, msg;
+  if (teamAScore > teamBScore) { winner = `${nameA} wins!`; msg = "Shabash! Champions of the drawing room."; }
+  else if (teamBScore > teamAScore) { winner = `${nameB} wins!`; msg = "Waah waah! Brilliant performance."; }
+  else { winner = "It's a tie!"; msg = "Both couples are equally wise — and equally stubborn."; }
+  document.getElementById('final-winner').textContent = winner;
+  document.getElementById('final-scores').innerHTML = `${nameA}: ${teamAScore} pts<br>${nameB}: ${teamBScore} pts`;
+  document.getElementById('final-msg').textContent = msg;
+}
+
+function restartGame() {
+  currentQ = 0; teamAScore = 0; teamBScore = 0; roundPts = 0; pointsAwarded = false;
+  questions.forEach((q, i) => {
+    state[i].revealed = new Array(q.answers.length).fill(false);
+    state[i].strikes = 0; state[i].done = false; state[i].won = null;
+    state[i].answersVisible = true;
+    state[i].shownWhileHidden = new Array(q.answers.length).fill(false);
+  });
+  document.getElementById('team-a-score').textContent = '0';
+  document.getElementById('team-b-score').textContent = '0';
+  document.getElementById('final').classList.remove('show');
+  document.getElementById('game-area').style.display = '';
+  document.getElementById('progress').style.display = '';
+  document.getElementById('scoreboard').style.display = '';
+  initQuestion();
+}
+
+// ===================== NAME SYNC =====================
+document.getElementById('team-a-name').addEventListener('input', syncAwardNames);
+document.getElementById('team-b-name').addEventListener('input', syncAwardNames);
+
+initQuestion();
+</script>
+</body>
+</html>
